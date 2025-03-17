@@ -1,6 +1,6 @@
 [build]
   command = "npm run build"
-  publish = "dist/public"
+  publish = "dist"
   functions = "netlify/functions"
 
 [build.environment]
@@ -10,6 +10,26 @@
 [dev]
   command = "npm run dev"
   port = 5000
+
+[[headers]]
+  for = "/assets/*"
+    [headers.values]
+    Content-Type = "application/javascript"
+
+[[headers]]
+  for = "/*.js"
+    [headers.values]
+    Content-Type = "application/javascript"
+
+[[headers]]
+  for = "/*.mjs"
+    [headers.values]
+    Content-Type = "application/javascript"
+
+[[headers]]
+  for = "/*.css"
+    [headers.values]
+    Content-Type = "text/css"
 
 [[redirects]]
   from = "/api/*"
@@ -21,8 +41,3 @@
   to = "/index.html"
   status = 200
   force = true
-
-[[headers]]
-  for = "/*"
-    [headers.values]
-    Access-Control-Allow-Origin = "*"
