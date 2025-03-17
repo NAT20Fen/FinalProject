@@ -24,6 +24,7 @@ if (import.meta.env.DEV) {
   console.log('Production Config:', {
     env: import.meta.env.MODE,
     apiUrl: API_URL,
-    hasRequiredConfig: !!(AWS_REGION && COGNITO_USER_POOL_ID && COGNITO_CLIENT_ID && STRIPE_PUBLISHABLE_KEY)
+    hasRequiredConfig: !!(AWS_REGION && COGNITO_USER_POOL_ID && COGNITO_CLIENT_ID && STRIPE_PUBLISHABLE_KEY),
+    netlifyFunctionsUrl: '/.netlify/functions/api'
   });
 }

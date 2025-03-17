@@ -30,7 +30,7 @@ export async function apiRequest(
     body = JSON.stringify(data);
   }
 
-  // Prepend API base URL in production
+  // Construct the full API URL
   const apiUrl = url.startsWith('/api/') 
     ? `${getApiBaseUrl()}${url.substring(4)}`
     : url;
