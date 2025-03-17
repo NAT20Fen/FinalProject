@@ -1,0 +1,3 @@
+/* /index.html 200
+/assets/* /assets/:splat 200
+/_assets/* /_assets/:splat 200
