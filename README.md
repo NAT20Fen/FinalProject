@@ -44,14 +44,9 @@ COGNITO_USER_POOL_ID=your_user_pool_id
 COGNITO_CLIENT_ID=your_client_id
 COGNITO_CLIENT_SECRET=your_client_secret
 
-# Frontend Environment Variables (must be prefixed with VITE_)
-VITE_AWS_REGION=us-east-1
-VITE_COGNITO_USER_POOL_ID=your_user_pool_id
-VITE_COGNITO_CLIENT_ID=your_client_id
-VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
-
 # Stripe Configuration
 STRIPE_SECRET_KEY=your_stripe_secret_key
+VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
 
 # Session Configuration (use a secure random string)
 SESSION_SECRET=your_session_secret
@@ -64,12 +59,10 @@ NODE_ENV=production
 1. Connect your repository to Netlify
 2. Configure build settings:
    - Build command: `npm run build`
-   - Publish directory: `dist`
+   - Publish directory: `dist/public`
    - Functions directory: `netlify/functions`
 
 3. Set all required environment variables in Netlify dashboard
-   - Make sure to include both backend (AWS_, STRIPE_, etc.) and frontend (VITE_) variables
-   - Double-check that all frontend variables are prefixed with VITE_
 
 4. Deploy your site:
    - Netlify will automatically deploy when you push to your repository
@@ -80,16 +73,12 @@ NODE_ENV=production
 - Verify all environment variables are set correctly
 - Ensure your AWS and Stripe credentials have the necessary permissions
 - Check that the API endpoints are being correctly proxied through Netlify Functions
-- If you see a white screen, check the browser console for errors and verify that all VITE_ prefixed environment variables are set
 
 ## Local Development
 Create a `.env` file for local development:
 ```env
 # Frontend Variables (must be prefixed with VITE_)
 VITE_STRIPE_PUBLISHABLE_KEY=${STRIPE_PUBLISHABLE_KEY}
-VITE_AWS_REGION=${AWS_REGION}
-VITE_COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
-VITE_COGNITO_CLIENT_ID=${COGNITO_CLIENT_ID}
 
 # AWS Configuration
 AWS_REGION=us-east-1

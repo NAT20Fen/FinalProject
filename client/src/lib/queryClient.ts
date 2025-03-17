@@ -3,16 +3,8 @@ import { QueryClient, QueryFunction } from "@tanstack/react-query";
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
-    console.error(`API Error: ${res.status} - ${text}`);
     throw new Error(`${res.status}: ${text}`);
   }
-}
-
-// Helper to get the correct API base URL
-function getApiBaseUrl(): string {
-  const baseUrl = import.meta.env.PROD ? '/.netlify/functions/api' : '/api';
-  console.log('API Base URL:', baseUrl);
-  return baseUrl;
 }
 
 export async function apiRequest(
@@ -30,27 +22,15 @@ export async function apiRequest(
     body = JSON.stringify(data);
   }
 
-  // Construct the full API URL
-  const apiUrl = url.startsWith('/api/') 
-    ? `${getApiBaseUrl()}${url.substring(4)}`
-    : url;
+  const res = await fetch(url, {
+    method,
+    headers,
+    body,
+    credentials: "include",
+  });
 
-  console.log(`Making ${method} request to:`, apiUrl);
-
-  try {
-    const res = await fetch(apiUrl, {
-      method,
-      headers,
-      body,
-      credentials: "include",
-    });
-
-    await throwIfResNotOk(res);
-    return res;
-  } catch (error) {
-    console.error('API Request failed:', error);
-    throw error;
-  }
+  await throwIfResNotOk(res);
+  return res;
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
@@ -59,31 +39,16 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const baseUrl = getApiBaseUrl();
-    const url = (queryKey[0] as string).startsWith('/api/')
-      ? `${baseUrl}${(queryKey[0] as string).substring(4)}`
-      : queryKey[0] as string;
+    const res = await fetch(queryKey[0] as string, {
+      credentials: "include",
+    });
 
-    console.log('Query request to:', url);
-
-    try {
-      const res = await fetch(url, {
-        credentials: "include",
-      });
-
-      if (unauthorizedBehavior === "returnNull" && res.status === 401) {
-        console.log('Returning null for 401 response as configured');
-        return null;
-      }
-
-      await throwIfResNotOk(res);
-      const data = await res.json();
-      console.log('Query response:', data);
-      return data;
-    } catch (error) {
-      console.error('Query error:', error);
-      throw error;
+    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
+      return null;
     }
+
+    await throwIfResNotOk(res);
+    return await res.json();
   };
 
 export const queryClient = new QueryClient({
